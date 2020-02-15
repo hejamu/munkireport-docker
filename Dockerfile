@@ -1,24 +1,40 @@
-FROM nginx:stable
+# Set base image
+FROM ubuntu:latest 					
+RUN  apt update && apt -y upgrade	
 
-RUN  apt-get update && apt-get -y upgrade
-
-RUN apt-get -y install curl wget unzip
-
-RUN apt-get -y install php-fpm php-xml php-sqlite3 libcurl3-dev
+# install munkireport from git release
+RUN apt -y install curl wget unzip
 
 WORKDIR /build
-
-RUN wget "$(curl -s https://api.github.com/repos/munkireport/munkireport-php/releases/latest | grep browser_download_url | grep zip | cut -d '"' -f 4)"
+RUN wget "$(curl -s https://api.github.com/repos/munkireport/munkireport-php/releases/latest \
+	| grep browser_download_url \
+	| grep zip \
+	| cut -d \'\"\' -f 4)"
 
 RUN mkdir /usr/local/munkireport
-
 RUN unzip *.zip -d /usr/local/munkireport
 
-RUN ls -la /usr/share/nginx/
+RUN rm -r /build
 
-RUN ln -s /usr/local/munkireport/public /usr/share/nginx/html/munkireport
+# install ngnix 
+RUN apt -y install nginx
 
-RUN ls /usr/share/nginx/html/munkireport
+# install php
+RUN apt -y install \
+	php-fpm \
+	php-mcrypt \
+	php-cli \
+	php-mysql \
+	php-gd \
+	php-imagick \
+	php-recode \
+	php-tidy \
+	php-xml \
+	php-xmlrpc \
+	php-sqlite3 \
+	libcurl3-dev
+
+RUN ln -s /usr/local/munkireport/public /var/www/html/munkireport
 
 WORKDIR /etc/nginx/conf.d
 
