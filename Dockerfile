@@ -9,7 +9,7 @@ WORKDIR /build
 RUN wget "$(curl -s https://api.github.com/repos/munkireport/munkireport-php/releases/latest \
 	| grep browser_download_url \
 	| grep zip \
-	| cut -d \'\"\' -f 4)"
+	| cut -d '"' -f 4)"
 
 RUN mkdir /usr/local/munkireport
 RUN unzip *.zip -d /usr/local/munkireport
@@ -22,7 +22,6 @@ RUN apt -y install nginx
 # install php
 RUN apt -y install \
 	php-fpm \
-	php-mcrypt \
 	php-cli \
 	php-mysql \
 	php-gd \
