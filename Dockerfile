@@ -20,6 +20,7 @@ RUN rm -r /build
 RUN apt -y install nginx
 
 # install php
+RUN mkdir /run/php
 RUN apt -y install \
 	php-fpm \
 	php-cli \
